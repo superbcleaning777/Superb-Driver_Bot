@@ -1,0 +1,26 @@
+{
+  "name": "odometer-tracker-bot",
+  "version": "1.0.0",
+  "description": "Discord bot that extracts odometer data from photos and logs to Google Sheets",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "ocr",
+    "google-sheets",
+    "odometer"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^22.13.11",
+    "discord.js": "^14.24.2",
+    "googleapis": "^166.0.0",
+    "tesseract.js": "^6.0.1"
+  }
+}
