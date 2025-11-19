@@ -163,6 +163,9 @@ async function startBot() {
     ]
   });
   
+  // Track processed messages to prevent duplicates
+  const processedMessages = new Set();
+  
   client.on('ready', () => {
     console.log(`✅ Bot logged in as ${client.user.tag}`);
     console.log(`Monitoring channels for !odo commands...`);
@@ -179,6 +182,19 @@ async function startBot() {
     }
     
     if (!message.content.startsWith('!odo')) return;
+    
+    // Prevent duplicate processing of the same message
+    if (processedMessages.has(message.id)) {
+      console.log(`⚠️ Message ${message.id} already processed, skipping...`);
+      return;
+    }
+    processedMessages.add(message.id);
+    
+    // Clean up old message IDs (keep only last 100)
+    if (processedMessages.size > 100) {
+      const firstId = processedMessages.values().next().value;
+      processedMessages.delete(firstId);
+    }
     
     console.log(`\n📝 Command received from ${message.author.tag}: ${message.content}`);
     
@@ -270,6 +286,16 @@ async function startBot() {
         } catch (err) {
           console.log('Could not remove processing reaction');
         }
+      }
+      
+      // Remove any previous error reaction if this is a retry
+      try {
+        const reactions = message.reactions.cache.get('❌');
+        if (reactions && reactions.me) {
+          await reactions.users.remove(client.user.id);
+        }
+      } catch (err) {
+        console.log('Could not remove error reaction');
       }
       
       await message.react('✅');
