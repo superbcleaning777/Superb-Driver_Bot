@@ -312,7 +312,9 @@ async function startBot() {
       await message.reply(responseText);
       
     } catch (error) {
-      console.error('Error processing odometer command:', error);
+      console.error('❌ ERROR processing odometer command:', error);
+      console.error('Error stack:', error.stack);
+      console.error('Error message:', error.message);
       
       if (processingReaction) {
         try {
@@ -322,8 +324,12 @@ async function startBot() {
         }
       }
       
-      await message.react('❌');
-      await message.reply(`❌ Error recording odometer data. Please try again.`);
+      try {
+        await message.react('❌');
+        await message.reply(`❌ Error recording odometer data. Please try again.\nError: ${error.message}`);
+      } catch (reactionError) {
+        console.error('Failed to add error reaction:', reactionError);
+      }
     }
   });
   
